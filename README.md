@@ -1,7 +1,7 @@
 # picturEvolution
 Evolution of art works by adding, changing, coloring ...
 
-see http://pictureEvolution.org
+see http://picturEvolution.org
 
 You know the coloring books for adults where you can spend hours or even days creating beautiful unique copies?
 While one purpose is to relaxe while coloring them it would be nice to share your version with the world.
