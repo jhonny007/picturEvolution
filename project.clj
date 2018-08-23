@@ -4,7 +4,10 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [compojure "1.6.1"]
                  [hiccup "1.0.5"]
-                 [ring-server "0.5.0"]]
+                 [ring-server "0.5.0"]
+                 [postgresql/postgresql "9.1-901.jdbc4"]
+                 [org.clojure/java.jdbc "0.2.3"]
+                 [lib-noir "0.8.2"]]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler picturevolution.handler/app
          :init picturevolution.handler/init
