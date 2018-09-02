@@ -7,7 +7,7 @@
                  [ring-server "0.5.0"]
                  [postgresql/postgresql "9.1-901.jdbc4"]
                  [org.clojure/java.jdbc "0.2.3"]
-                 [lib-noir "0.8.2"]]
+                 [lib-noir "0.9.9"]]
   :plugins [[lein-ring "0.12.4"]]
   :ring {:handler picturevolution.handler/app
          :init picturevolution.handler/init
