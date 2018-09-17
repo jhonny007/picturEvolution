@@ -12,7 +12,7 @@
   (str galleries File/separator (session/get :user)) )
 
 (defn image-uri [userid file-name]
-  (str "/img/" userid "/" (url-encode file-name)))
+  (str "/img/" userid "/" (.replace (url-encode file-name) "+" "%20")))
 
 (defn thumb-uri [userid file-name]
   (image-uri userid (str thumb-prefix file-name)))

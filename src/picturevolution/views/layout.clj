@@ -11,7 +11,10 @@
     [:head
      [:title "Welcome to picturevolution"]
      (include-css "/css/screen.css")
-     (include-js "//code.jquery.com/jquery-2.0.2.min.js")]
+     (include-js "//code.jquery.com/jquery-2.0.2.min.js")
+     (include-js "/js/albumcolors.js")
+     (include-js "/js/site.js")
+     (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")]
     [:body content]))
 
 (defn make-menu [& items]
@@ -27,21 +30,21 @@
             (password-field {:placeholder "password"} "pass")
             (submit-button "login"))))
 
-(defn user-menu [user]
+(defn user-menu [id]
   (make-menu
    (link-to "/" "home")
    (link-to "/upload" "upload images")
-   (link-to "/logout" (str "logout " user))
+   (link-to "/logout" (str "logout " id))
    
-   [:img {:src (str "https://www.gravatar.com/avatar/" 
+   [:img {:src (str "https://www.gravatar.com/avatar/"
                     (if (= nil (session/get :email))
-                      (gravatar-hash (session/get :user))
+                      (gravatar-hash id)
                       (gravatar-hash (session/get :email))
                       ) ".jpg?d=robohash")}]))
 
 (defn common [& content]
   (base
-   (if-let [user (session/get :user)]
+   (if-let [user (session/get :id)]
      (user-menu user)
      (guest-menu))
    [:div.content content]))

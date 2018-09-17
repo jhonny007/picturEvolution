@@ -5,6 +5,7 @@
             [picturevolution.routes.home :refer [home-routes]]
             [picturevolution.routes.upload :refer [upload-routes]]
             [picturevolution.routes.gallery :refer [gallery-routes]]
+            [picturevolution.routes.stats :refer [stats-routes]]
             [noir.util.middleware :as noir-middleware]
 
             [compojure.core :refer [defroutes routes]]
@@ -34,13 +35,13 @@
 
 
 (def app
-    (noir-middleware/app-handler [auth-routes 
-                                    home-routes 
-                                    upload-routes
-                                    gallery-routes
-                                    app-routes]
-                                 :access-rules [user-page])
-  )
+  (noir-middleware/app-handler [auth-routes 
+                                home-routes 
+                                upload-routes
+                                gallery-routes
+                                stats-routes
+                                app-routes]
+                               :access-rules [user-page]))
 
 ;;
 ;;(def app

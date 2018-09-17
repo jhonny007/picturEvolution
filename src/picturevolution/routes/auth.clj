@@ -31,20 +31,20 @@
    (form-to [:post "/register"]
             (anti-forgery-field)
             (control text-field :id 1 "screen name")
-            (control text-field :email 2 "email")
-            (control password-field :pass 3 "Password")
-            (control password-field :pass1 4 "Retype Password")
+            (control password-field :pass 2 "Password")
+            (control password-field :pass1 3 "Retype Password")
+            (control text-field :email 4 "email")
             (submit-button {:tabindex 5} "create account"))))
 
-(defn handle-registration [id email pass pass1]
+(defn handle-registration [uuid id email pass pass1]
   (rule (min-length? pass 5)
         [:pass "password must be at least 5 characters"])
   (rule (= pass pass1) [:pass "password was not retyped correctly"])
   (if (errors? :pass)
     (registration-page)
     (do 
-      (db/add-user-record {:id id :email email :pass (crypt/encrypt pass)})
-      (session/put! :user id)
+      (db/add-user-record {:uuid uuid :id id :email email :pass (crypt/encrypt pass)})
+      (session/put! :user uuid)
       (create-gallery-path)
       (resp/redirect "/")
 )))
@@ -69,13 +69,14 @@
     (if (errors? :id :pass)
       (login-page)
       (do
-        (session/put! :user id)
+        (session/put! :id (:id user))
+        (session/put! :user (:uuid user))
         (session/put! :email (:email user))
         (resp/redirect "/")))))
 
 (defroutes auth-routes
   (GET "/register" [_] (registration-page))
-  (POST "/register" [id email pass pass1] (handle-registration id email pass pass1))
+  (POST "/register" [id email pass pass1] (handle-registration (java.util.UUID/randomUUID) id email pass pass1))
   (GET "/login" [_] (login-page))
   (POST "/login" [id pass] (handle-login id pass))
   (GET "/logout" [] 

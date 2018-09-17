@@ -17,38 +17,60 @@
 
 
 
-(defn thumbnail-link [{:keys [userid name secondartist galleryowner]}]
+(defn thumbnail-link [{:keys [user_uuid name secondartist_user_uuid galleryowner]}]
   (let [logged-in-user (session/get :user)]
     [:div.thumbnail
-     [:a {:href (image-uri userid name)}
-      (image (thumb-uri userid name))
-      (if (= userid logged-in-user) (check-box name))]
-     (if-not (nil? secondartist) 
+     (image (thumb-uri user_uuid name))
+     
+     [:span.disabled.glyphicon.glyphicon-star {:aria-hidden "true"}]
+     [:span.glyphicon.glyphicon-star {:aria-hidden "true"}]
+     [:span.glyphicon.glyphicon-star {:aria-hidden "true"}]
+     [:span.glyphicon.glyphicon-star {:aria-hidden "true"}]
+     [:span.glyphicon.glyphicon-star-empty {:aria-hidden "true"}]
+     
+     (if (= user_uuid logged-in-user)
+       [:a {:href (image-uri user_uuid name)} "Original" ;; (check-box name)
+        ]
+
+     (if (= {:count 1} (db/has-purchased logged-in-user user_uuid name) )
+       [:a {:href (image-uri user_uuid name)} "Purchased"]
+       [:a {:href (image-uri user_uuid name)} "Buy"])
+
+)     
+     (if-not (nil? secondartist_user_uuid) 
        [:div#artist
-        [:a {:href (str "/gallery/"  (if (= galleryowner userid) secondartist userid))}
-         (if (= galleryowner userid) secondartist userid)]])]))
+        [:a {:href (str "/gallery/"  (if (= galleryowner user_uuid) secondartist_user_uuid user_uuid))}
+         (if (= galleryowner user_uuid) secondartist_user_uuid user_uuid)]])]))
 
-(defn gallery-link [{:keys [userid name]}]
+(defn gallery-link [{:keys [user_uuid name]}]
   [:div.thumbnail
-   [:a {:href (str "/gallery/" userid)}
-    (image (thumb-uri userid name))
-    userid "'s gallery"]])
+   [:a {:href (str "/gallery/" user_uuid)}
+    (image (thumb-uri user_uuid name))
+    user_uuid "'s gallery"]])
 
-(defn display-gallery [userid]
-  (if-let [gallery (not-empty (map thumbnail-link (db/images-by-user userid)))]
+(defn download-link [full-size thumb]
+  [:div.thumbnail
+   (image thumb)
+   [:a {:href full-size} "Free Download"]])
+
+(defn display-gallery [user_uuid]
+  (if-let [gallery (not-empty (map thumbnail-link (db/images-by-user user_uuid)))]
     [:div
      [:div#error]
      gallery
-     (if (= userid (session/get :user))
+     (if (= user_uuid (session/get :user))
        [:input#delete {:type "submit" :value "delete images"}])
      ]
-    [:p "The user " userid " does not have any galleries"]))
+    [:p "The user " user_uuid " does not have any galleries"]))
+
+(defn show-downloads []
+  (download-link "/img/1_V1.x.pdf" "/img/1_V1.jpg"))
 
 (defn show-galleries []
   (map gallery-link (db/get-gallery-previews)))
 
 (defroutes gallery-routes
-  (GET "/gallery/:userid" [userid] (layout/common
+  (GET "/gallery/:user_uuid" [user_uuid] (layout/common
                                     (include-js "/js/gallery.js")
-                                    (display-gallery userid))))
+                                    (display-gallery user_uuid))))
 

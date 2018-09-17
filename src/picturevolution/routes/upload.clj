@@ -21,7 +21,9 @@
             java.awt.geom.AffineTransform
             javax.imageio.ImageIO))
 
-(def thumb-size 150)
+(def thumb-size-small 150)
+(def thumb-size-medium 300)
+(def thumb-size-big 600)
 
 (defn scale [img ratio width height]
   (let [scale (AffineTransform/getScaleInstance 
@@ -34,8 +36,8 @@
   (let [img          (ImageIO/read file)
         img-width    (.getWidth img)
         img-height   (.getHeight img)
-        ratio        (/ thumb-size img-height)]
-    (scale img ratio (int (* img-width ratio)) thumb-size)))
+        ratio        (/ thumb-size-small img-height)]
+    (scale img ratio (int (* img-width ratio)) thumb-size-small)))
 
 (defn save-thumbnail [{:keys [filename]}]
   (let [path (str (gallery-path) File/separator)]
